@@ -2,6 +2,7 @@ import sys
 import mysql.connector
 import smtpd
 from time import sleep
+import os
 #--------------MYSQL------------------------------------
 mydb=mysql.connector.connect(
     host="localhost",
@@ -18,11 +19,14 @@ def displayMenu():
     status = input("WELCOME TO DJOYOFBAKING! \nAre you registered user? y/n? Press q to quit").replace(" ","")
     print("################################################")
     if status == "y":
+        os.system('cls')
         oldUser()
     elif status == "n":
+        os.system('cls')
         newUser()
     elif status=="q":
         app=False
+        os.system('cls')
         sys.exit("Exit Successfully")
 
 def newUser():
@@ -31,23 +35,21 @@ def newUser():
     gmail = "False"
     addr = input("Address:")
     while bool2==True:
-        username=input("Username:")
+        username=input("Username:").replace(" ","")
         sql2="select * from customer where username= %s"
         myc.execute(sql2,[(username)])
         result2=myc.fetchall()
-        if "@" in username or "#" in username or "$" in username or "*" in username or "%" in username or "&" in username or "|" in username or ";" in username or ":" in username or "[" in username or "]" in username or "'" in username:
+        if "@" in username or "#" in username or "$" in username or "*" in username or "%" in username or "&" in username or "|" in username or ";" in username or ":" in username or "[" in username or "]" in username or "'" in username or len(username)==0:
             print("Special characters are not allowed. Try again")
-            sleep(2)
         else:
             if result2:
                 for i in result2:
                     print("Username already taken please try again")
-                    sleep(2)
                     break
             else:
                 bool2=False
     while bool3==True:
-        createLogin = input("add Email Address: ").replace(" ","")
+        createLogin = input("add Email Address: ").strip()
         sql = "select * from customer where emailadd = %s "
         myc.execute(sql, [(createLogin)])
         results = myc.fetchall()
@@ -56,13 +58,12 @@ def newUser():
             if results:
                 for i in results:
                     print("\nEmail Address already exist! Please Try again\n")
-                    sleep(2)
                     break
             else:
                 bool3=False
         else:
             print("@gmail.com is required")
-            sleep(2)
+
     createPassw = input("Create password: ")
     if gmail=="True":
         sql = "INSERT INTO customer (address, emailadd, password,username) VALUES (%s,%s, %s,%s)"
@@ -71,11 +72,12 @@ def newUser():
         myc.execute(sql2)
         myc.execute(sql, val)
         mydb.commit()
+        os.system('cls')
         print(myc.rowcount, "record inserted.")
         print("\nUser created\n")
     else:
         print("Something's Wrong. Please Try again")
-        sleep(2)
+        os.system('cls')
 
 def oldUser():
     login = input("Enter Email Address: ").replace(" ","")
@@ -95,7 +97,7 @@ def firstPage():
     print("#####################################\n")
     print("[0]Search Item\n")
     print("[1]View Cart\n")
-    print("[2]Add to Cart\n")
+    print("[2]Buy Items\n")
     print("[3]Log Out\n")
     while boolean1==True:
         user_input=input(":")
@@ -103,30 +105,39 @@ def firstPage():
             print("Just Press Enter if you want to go back\nPlease type name of item you want to search\n")
             user_input2=input(":")
             if user_input2=="":
+                os.system('cls')
                 firstPage()
             else:
                 print("Item not found!")
-                sleep(1.5)
+                os.system('cls')
                 firstPage()
         elif(user_input=="1"):
             print("Just Press Enter if you want to go back\nYour Cart:\n")
             user_input3=input(":")
             if user_input3=="":
+                os.system('cls')
                 firstPage()
         elif(user_input=="2"):
-            print("Just Press Enter if you want to go back\nItem Name\tPrice")
-            print("Enzaimada\t30 Peses\n")
+            print("Just Press Enter if you want to go back\nItem Name and price")
+            printItem()
             user_input4=input(":")
             if user_input4=="":
+                os.system('cls')
                 firstPage()
         elif user_input=="3":
             boolean1 = False
             print("Log out success")
+            os.system('cls')
             displayMenu()
         else:
-            firstPage()
             print("Invalid Input!")
-
+            os.system('cls')
+            firstPage()
+def printItem():
+    myc.execute("SELECT item,price FROM items")
+    result=myc.fetchall()
+    for i in result:
+        print(i)
 while app==True:
     displayMenu()
 
