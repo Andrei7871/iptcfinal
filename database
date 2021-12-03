@@ -1,4 +1,4 @@
-CREATE DATABASE iptc finals;
+CREATE DATABASE iptcfinals;
 use iptcfinals;
-CREATE TABLE customer(ID int NOT NULL AUTO_INCREMENT PRIMARY KEY,address varchar(250) NOT NULL, emailadd varchar(250) NOT NULL, password varchar(250) NOT NULL);
+CREATE TABLE customer(ID int NOT NULL AUTO_INCREMENT PRIMARY KEY,address varchar(250) NOT NULL, emailadd varchar(250) NOT NULL, password varchar(250) NOT NULL, username varchar(250) NOT NULL);
 
