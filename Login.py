@@ -92,13 +92,15 @@ def oldUser():
             break
     else:
         print("\nUser doesn't exist or wrong password!\n")
-def firstPage():
-    boolean1=True
+def printOption():
     print("#####################################\n")
     print("[0]Search Item\n")
     print("[1]View Cart\n")
     print("[2]Buy Items\n")
     print("[3]Log Out\n")
+def firstPage():
+    boolean1=True
+    printOption()
     while boolean1==True:
         user_input=input(":")
         if(user_input=="0"):
@@ -118,12 +120,73 @@ def firstPage():
                 os.system('cls')
                 firstPage()
         elif(user_input=="2"):
-            print("Just Press Enter if you want to go back\nItem Name and price")
-            printItem()
-            user_input4=input(":")
-            if user_input4=="":
+            bool1 = True
+            bool2 = True
+            while bool1:
                 os.system('cls')
-                firstPage()
+                print("Just Press Enter if you want to go back\nCode Item\tItem Price \t\t\tItem Name")
+                printItem()
+                ChooseI=input(":").replace(" ","")
+                if ChooseI=="1":
+                    while bool2:
+                        print("[0] Add to cart")
+                        print("[1] Place order")
+                        print("[Enter] Back")
+                        Choose2=input(":").replace(" ","")
+                        if Choose2=="0":
+                            print("Added to Cart")
+                            firstPage()
+                        elif Choose2=="1":
+                            print("Item is in process")
+                            firstPage()
+                        elif len(Choose2)==0:
+                            os.system('cls')
+                            firstPage()
+                        else:
+                            print("invalid input")
+                            sleep(2.5)
+                elif ChooseI=="2":
+                    while bool2:
+                        print("[0] Add to cart")
+                        print("[1] Place order")
+                        print("[Enter] Back")
+                        Choose2=input(":").replace(" ","")
+                        if Choose2=="0":
+                            print("Added to Cart")
+                            firstPage()
+                        elif Choose2=="1":
+                            print("Item is in process")
+                            firstPage()
+                        elif len(Choose2)==0:
+                            os.system('cls')
+                            firstPage()
+                        else:
+                            print("invalid input")
+                            sleep(2.5)
+                elif ChooseI=="3":
+                    while bool2:
+                        print("[0] Add to cart")
+                        print("[1] Place order")
+                        print("[Enter] Back")
+                        Choose2=input(":").replace(" ","")
+                        if Choose2=="0":
+                            print("Added to Cart")
+                            firstPage()
+                        elif Choose2=="1":
+                            print("Item is in process")
+                            firstPage()
+                        elif len(Choose2)==0:
+                            os.system('cls')
+                            firstPage()
+                        else:
+                            print("invalid input")
+                            sleep(2.5)
+                elif len(ChooseI)==0:
+                    os.system('cls')
+                    firstPage()
+                else:
+                    print("Invalid Input")
+
         elif user_input=="3":
             boolean1 = False
             print("Log out success")
@@ -133,11 +196,17 @@ def firstPage():
             print("Invalid Input!")
             os.system('cls')
             firstPage()
+
 def printItem():
-    myc.execute("SELECT item,price FROM items")
+    myc.execute("SELECT * FROM items")
     result=myc.fetchall()
+    j=0
     for i in result:
-        print(i)
+        print(
+            f"{i[0]:<15} {i[2]:<15} {i[1]:>15}"
+        )
+
+
 while app==True:
     displayMenu()
 
