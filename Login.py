@@ -14,6 +14,8 @@ myc=mydb.cursor()
 #--------------MYSQL------------------------------------
 app=True
 status = ""
+login=""
+passw=""
 def displayMenu():
     print("################################################")
     status = input("WELCOME TO DJOYOFBAKING! \nAre you registered user? y/n? Press q to quit").replace(" ","")
@@ -80,6 +82,8 @@ def newUser():
         os.system('cls')
 
 def oldUser():
+    global login
+    global passw
     login = input("Enter Email Address: ").replace(" ","")
     passw = input("Enter password: ")
     sql="select * from customer where emailadd = %s and password = %s"
@@ -101,6 +105,12 @@ def printOption():
 def firstPage():
     boolean1=True
     printOption()
+    sql = "select * from customer where emailadd = %s and password = %s"
+    myc.execute(sql, [(login), (passw)])
+    results = myc.fetchall()
+    if results:
+        for i in results:
+            getUsername = i[4]
     while boolean1==True:
         user_input=input(":")
         if(user_input=="0"):
@@ -115,6 +125,12 @@ def firstPage():
                 firstPage()
         elif(user_input=="1"):
             print("Just Press Enter if you want to go back\nYour Cart:\n")
+            myc.execute("SELECT * FROM "+getUsername)
+            myresult = myc.fetchall()
+            for i in myresult:
+                print(
+                    f"{i[1]:<15} {i[0]:>15}"
+                )
             user_input3=input(":")
             if user_input3=="":
                 os.system('cls')
@@ -126,7 +142,24 @@ def firstPage():
                 os.system('cls')
                 print("Just Press Enter if you want to go back\nCode Item\tItem Price \t\t\tItem Name")
                 printItem()
-                ChooseI=input(":").replace(" ","")
+                ChooseI=input("Choose ID items:").replace(" ","")
+                Cqty=int(input("how many items?:"))
+                sql = "select * from items where ID = %s"
+                myc.execute(sql, [(ChooseI)])
+                results = myc.fetchall()
+                if results:
+                    for i in results:
+                        global getItem
+                        getItem = i[1]
+                        break
+                sql = "select * from items where ID = %s"
+                myc.execute(sql, [(Cqty)])
+                results = myc.fetchall()
+                if results:
+                    for i in results:
+                        global getPrice
+                        getPrice = i[2]
+                        break
                 if ChooseI=="1":
                     while bool2:
                         print("[0] Add to cart")
@@ -134,7 +167,32 @@ def firstPage():
                         print("[Enter] Back")
                         Choose2=input(":").replace(" ","")
                         if Choose2=="0":
-                            print("Added to Cart")
+                            sql = "select * from customer where emailadd = %s and password = %s"
+                            myc.execute(sql, [(login), (passw)])
+                            results = myc.fetchall()
+                            if results:
+                                sql = "select * from items where ID = %s"
+                                myc.execute(sql, [(Cqty)])
+                                results = myc.fetchall()
+                                if results:
+                                    for i in results:
+                                        getPrice = i[2]
+                                        break
+                                sql = "select * from customer where emailadd = %s and password = %s"
+                                myc.execute(sql, [(login), (passw)])
+                                results = myc.fetchall()
+                                if results:
+                                    for i in results:
+                                        getUsername = i[4]
+                                        sql = "INSERT INTO " + getUsername + " (item,price,qty) VALUES (%s,%s,%s)"
+                                        val = (getItem, getPrice, Cqty)
+                                        sql = sql.format(val, )
+                                        myc.execute(sql, val)
+                                        mydb.commit()
+                                        print("Added to Cart")
+                                        break
+                                else:
+                                    print("something's wrong")
                             firstPage()
                         elif Choose2=="1":
                             print("Item is in process")
@@ -152,7 +210,22 @@ def firstPage():
                         print("[Enter] Back")
                         Choose2=input(":").replace(" ","")
                         if Choose2=="0":
-                            print("Added to Cart")
+                            sql = "select * from customer where emailadd = %s and password = %s"
+                            myc.execute(sql, [(login), (passw)])
+                            results = myc.fetchall()
+                            if results:
+                                for i in results:
+                                    getUsername= i[4]
+                                    sql = "INSERT INTO "+ getUsername+" (item,price,qty) VALUES (%s,%s,%s)"
+                                    val = (getItem,getPrice,Cqty)
+                                    sql=sql.format(val,)
+                                    myc.execute(sql,val)
+                                    mydb.commit()
+                                    print("Added to Cart")
+                                    break
+                            else:
+                                print("something's wrong")
+
                             firstPage()
                         elif Choose2=="1":
                             print("Item is in process")
@@ -169,8 +242,29 @@ def firstPage():
                         print("[1] Place order")
                         print("[Enter] Back")
                         Choose2=input(":").replace(" ","")
+                        sql = "select * from items where ID = %s"
+                        myc.execute(sql, [(Cqty)])
+                        results = myc.fetchall()
+                        if results:
+                            for i in results:
+                                getPrice = i[2]
+                                break
                         if Choose2=="0":
-                            print("Added to Cart")
+                            sql = "select * from customer where emailadd = %s and password = %s"
+                            myc.execute(sql, [(login), (passw)])
+                            results = myc.fetchall()
+                            if results:
+                                for i in results:
+                                    getUsername = i[4]
+                                    sql = "INSERT INTO " + getUsername + " (item,price,qty) VALUES (%s,%s,%s)"
+                                    val = (getItem, getPrice, Cqty)
+                                    sql = sql.format(val, )
+                                    myc.execute(sql, val)
+                                    mydb.commit()
+                                    print("Added to Cart")
+                                    break
+                            else:
+                                print("something's wrong")
                             firstPage()
                         elif Choose2=="1":
                             print("Item is in process")
