@@ -1,4 +1,4 @@
-import sys
+aimport sys
 import mysql.connector
 import smtpd
 from time import sleep
@@ -142,114 +142,37 @@ def firstPage():
                 os.system('cls')
                 print("Just Press Enter if you want to go back\nCode Item\tItem Price \t\t\tItem Name")
                 printItem()
-                ChooseI=input("Choose ID items:").replace(" ","")
-                Cqty=int(input("how many items?:"))
+                global getID
+                global getItem
+                global getPrice
+                inputItem = input("Choose Item: ").replace(" ","")
+                if inputItem=="":
+                    firstPage()
+                Cqty = input("How many Items: ")
                 sql = "select * from items where ID = %s"
-                myc.execute(sql, [(ChooseI)])
+                myc.execute(sql, [(inputItem)])
                 results = myc.fetchall()
                 if results:
                     for i in results:
-                        global getItem
+                        getID = i[0]
                         getItem = i[1]
-                        break
-                sql = "select * from items where ID = %s"
-                myc.execute(sql, [(Cqty)])
-                results = myc.fetchall()
-                if results:
-                    for i in results:
-                        global getPrice
                         getPrice = i[2]
                         break
-                if ChooseI=="1":
-                    while bool2:
-                        print("[0] Add to cart")
-                        print("[1] Place order")
-                        print("[Enter] Back")
-                        Choose2=input(":").replace(" ","")
-                        if Choose2=="0":
-                            sql = "select * from customer where emailadd = %s and password = %s"
-                            myc.execute(sql, [(login), (passw)])
-                            results = myc.fetchall()
-                            if results:
-                                sql = "select * from items where ID = %s"
-                                myc.execute(sql, [(Cqty)])
-                                results = myc.fetchall()
-                                if results:
-                                    for i in results:
-                                        getPrice = i[2]
-                                        break
-                                sql = "select * from customer where emailadd = %s and password = %s"
-                                myc.execute(sql, [(login), (passw)])
-                                results = myc.fetchall()
-                                if results:
-                                    for i in results:
-                                        getUsername = i[4]
-                                        sql = "INSERT INTO " + getUsername + " (item,price,qty) VALUES (%s,%s,%s)"
-                                        val = (getItem, getPrice, Cqty)
-                                        sql = sql.format(val, )
-                                        myc.execute(sql, val)
-                                        mydb.commit()
-                                        print("Added to Cart")
-                                        break
-                                else:
-                                    print("something's wrong")
-                            firstPage()
-                        elif Choose2=="1":
-                            print("Item is in process")
-                            firstPage()
-                        elif len(Choose2)==0:
-                            os.system('cls')
-                            firstPage()
-                        else:
-                            print("invalid input")
-                            sleep(2.5)
-                elif ChooseI=="2":
-                    while bool2:
-                        print("[0] Add to cart")
-                        print("[1] Place order")
-                        print("[Enter] Back")
-                        Choose2=input(":").replace(" ","")
-                        if Choose2=="0":
-                            sql = "select * from customer where emailadd = %s and password = %s"
-                            myc.execute(sql, [(login), (passw)])
+                    print("Your Item: " + getItem)
+                    print("Your ID: " + str(getID))
+                    print("Price Item: " + str(getPrice))
+                    Option1 = input("[0]Add to cart\n[1]Place Order\n: ")
+                    if Option1=="0":
+                        sql = "select * from customer where emailadd = %s and password = %s"
+                        myc.execute(sql, [(login), (passw)])
+                        results = myc.fetchall()
+                        if results:
+                            sql = "select * from items where ID = %s"
+                            myc.execute(sql, [(Cqty)])
                             results = myc.fetchall()
                             if results:
                                 for i in results:
-                                    getUsername= i[4]
-                                    sql = "INSERT INTO "+ getUsername+" (item,price,qty) VALUES (%s,%s,%s)"
-                                    val = (getItem,getPrice,Cqty)
-                                    sql=sql.format(val,)
-                                    myc.execute(sql,val)
-                                    mydb.commit()
-                                    print("Added to Cart")
                                     break
-                            else:
-                                print("something's wrong")
-
-                            firstPage()
-                        elif Choose2=="1":
-                            print("Item is in process")
-                            firstPage()
-                        elif len(Choose2)==0:
-                            os.system('cls')
-                            firstPage()
-                        else:
-                            print("invalid input")
-                            sleep(2.5)
-                elif ChooseI=="3":
-                    while bool2:
-                        print("[0] Add to cart")
-                        print("[1] Place order")
-                        print("[Enter] Back")
-                        Choose2=input(":").replace(" ","")
-                        sql = "select * from items where ID = %s"
-                        myc.execute(sql, [(Cqty)])
-                        results = myc.fetchall()
-                        if results:
-                            for i in results:
-                                getPrice = i[2]
-                                break
-                        if Choose2=="0":
                             sql = "select * from customer where emailadd = %s and password = %s"
                             myc.execute(sql, [(login), (passw)])
                             results = myc.fetchall()
@@ -257,7 +180,7 @@ def firstPage():
                                 for i in results:
                                     getUsername = i[4]
                                     sql = "INSERT INTO " + getUsername + " (item,price,qty) VALUES (%s,%s,%s)"
-                                    val = (getItem, getPrice, Cqty)
+                                    val = (getItem,getPrice,Cqty)
                                     sql = sql.format(val, )
                                     myc.execute(sql, val)
                                     mydb.commit()
@@ -265,21 +188,12 @@ def firstPage():
                                     break
                             else:
                                 print("something's wrong")
-                            firstPage()
-                        elif Choose2=="1":
-                            print("Item is in process")
-                            firstPage()
-                        elif len(Choose2)==0:
-                            os.system('cls')
-                            firstPage()
-                        else:
-                            print("invalid input")
-                            sleep(2.5)
-                elif len(ChooseI)==0:
-                    os.system('cls')
-                    firstPage()
+                        firstPage()
+                        print("Added to cart")
+                    else:
+                        print("Item is in processed")
                 else:
-                    print("Invalid Input")
+                    print("Invalid")
 
         elif user_input=="3":
             boolean1 = False
@@ -299,8 +213,6 @@ def printItem():
         print(
             f"{i[0]:<15} {i[2]:<15} {i[1]:>15}"
         )
-
-
 while app==True:
     displayMenu()
 
