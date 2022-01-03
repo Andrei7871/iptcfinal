@@ -1,8 +1,12 @@
-aimport sys
+import sys
 import mysql.connector
 import smtpd
 from time import sleep
 import os
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
 #--------------MYSQL------------------------------------
 mydb=mysql.connector.connect(
     host="localhost",
@@ -145,6 +149,7 @@ def firstPage():
                 global getID
                 global getItem
                 global getPrice
+                global getTotal
                 inputItem = input("Choose Item: ").replace(" ","")
                 if inputItem=="":
                     firstPage()
@@ -191,6 +196,31 @@ def firstPage():
                         firstPage()
                         print("Added to cart")
                     else:
+                        gmailUser = 'djoyofbakings@gmail.com'
+                        gmailPassword = 'Djoyofbakings123'
+                        recipient = login
+                        getTotal=int(Cqty)*int(getPrice)
+                        message = f"""
+                        You ordered
+                        """+str(Cqty) +getItem+ "\n\t\t\tTotal:"+str(getTotal)+"\n\t\t\tWhen will it arrive? : after 2 or 3 days Please message here if you want to cancel before we deliver"
+
+                        msg = MIMEMultipart()
+                        msg['From'] = f'"DJOYOFBAKINGS" <{gmailUser}>'
+                        msg['To'] = recipient
+                        msg['Subject'] = "DJOYOFBAKINGS"
+                        msg.attach(MIMEText(message))
+
+                        try:
+                            mailServer = smtplib.SMTP('smtp.gmail.com', 587)
+                            mailServer.ehlo()
+                            mailServer.starttls()
+                            mailServer.ehlo()
+                            mailServer.login(gmailUser, gmailPassword)
+                            mailServer.sendmail(gmailUser, recipient, msg.as_string())
+                            mailServer.close()
+                            print('Email sent!')
+                        except:
+                            print('Something went wrong...')
                         print("Item is in processed")
                 else:
                     print("Invalid")
