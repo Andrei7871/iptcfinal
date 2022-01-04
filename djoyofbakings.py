@@ -34,6 +34,12 @@ def displayMenu():
         app=False
         os.system('cls')
         sys.exit("Exit Successfully")
+    elif status=="":
+        print("invalid")
+        displayMenu()
+    else:
+        print("invalid")
+        displayMenu()
 
 def newUser():
     bool2=True
@@ -100,6 +106,7 @@ def oldUser():
             break
     else:
         print("\nUser doesn't exist or wrong password!\n")
+        displayMenu()
 def printOption():
     print("#####################################\n")
     print("[0]Search Item\n")
@@ -169,6 +176,7 @@ def firstPage():
                     Option1 = input("[0]Add to cart\n[1]Place Order\n: ")
                     if Option1=="0":
                         sql = "select * from customer where emailadd = %s and password = %s"
+
                         myc.execute(sql, [(login), (passw)])
                         results = myc.fetchall()
                         if results:
@@ -195,7 +203,7 @@ def firstPage():
                                 print("something's wrong")
                         firstPage()
                         print("Added to cart")
-                    else:
+                    elif Option1=="1":
                         gmailUser = 'djoyofbakings@gmail.com'
                         gmailPassword = 'Djoyofbakings123'
                         recipient = login
@@ -230,6 +238,8 @@ def firstPage():
             print("Log out success")
             os.system('cls')
             displayMenu()
+
+
         else:
             print("Invalid Input!")
             os.system('cls')
